@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Style Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="top-container">
+            <div class="clock">
+                <span class="hour"></span>:<span class="minute"></span>
+            </div>
+            <div class="status">
+                <img src="status.png" alt="Status">
+            </div>
+        </div>
+        <div class="display">
+            <div id="display">0</div>
+        </div>
+        <div class="buttons-container">
+            <div class="button function ac" onclick="clearDisplay()">AC</div>
+            <div class="button function pm" onclick="appendOperator('±')">±</div>
+            <div class="button function percent" onclick="appendOperator('%')">%</div>
+            <div class="button operator division" onclick="appendOperator('/')">÷</div>
+            <div class="button number number-7" onclick="appendNumber('7')">7</div>
+            <div class="button number number-8" onclick="appendNumber('8')">8</div>
+            <div class="button number number-9" onclick="appendNumber('9')">9</div>
+            <div class="button operator multiplication" onclick="appendOperator('*')">×</div>
+            <div class="button number number-4" onclick="appendNumber('4')">4</div>
+            <div class="button number number-5" onclick="appendNumber('5')">5</div>
+            <div class="button number number-6" onclick="appendNumber('6')">6</div>
+            <div class="button operator subtraction" onclick="appendOperator('-')">−</div>
+            <div class="button number number-1" onclick="appendNumber('1')">1</div>
+            <div class="button number number-2" onclick="appendNumber('2')">2</div>
+            <div class="button number number-3" onclick="appendNumber('3')">3</div>
+            <div class="button operator addition" onclick="appendOperator('+')">+</div>
+            <div class="button number number-0" onclick="appendNumber('0')">0</div>
+            <div class="button decimal" onclick="appendNumber('.')">.</div>
+            <div class="button operator equal" onclick="calculate()">=</div>
+        </div>
+    </div>
+    <div class="history">
+        <h3>nav nejausmas ka pec matematiskas darbibas +/- utt lai paliktu tas skaitlis, bet talak nepieskaititos klat?</h3>
+        <ul id="history-list"></ul>
+        <button onclick="clearHistory()">Clear History</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
