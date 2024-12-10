@@ -1,3 +1,4 @@
+/* Esošais kods */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -45,7 +46,7 @@ body {
 
 .buttons-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* 4 vienādas kolonnas */
     grid-template-rows: repeat(5, 1fr);
     gap: 10px;
 }
@@ -72,34 +73,9 @@ body {
     background: #f1a33c;
 }
 
+/* Izmaiņas "0" pogai */
 .button.number-0 {
-    border-radius: 55px;
-    grid-column: span 2;
-}
-
-.history {
-    width: 300px;
-    margin-top: 20px;
-}
-
-.history h2 {
-    text-align: center;
-}
-
-#history-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-#history-list li {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-#history-list button {
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
+    grid-column: span 2; /* Aizņem divas kolonnas */
+    border-radius: 55px; /* Pielāgots stils */
+    width: 100%; /* Aizpilda pieejamo vietu */
 }
