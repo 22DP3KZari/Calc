@@ -40,11 +40,9 @@
             <div class="button decimal" onclick="appendNumber('.')">.</div>
             <div class="button operator equal" onclick="calculate()">=</div>
         </div>
-    </div>
-    <div class="history">
-        <h3>nav nejausmas ka pec matematiskas darbibas +/- utt lai paliktu tas skaitlis, bet talak nepieskaititos klat? (ka tas ir ios kalkulatoriem)</h3>
-        <ul id="history-list"></ul>
-        <button onclick="clearHistory()">Clear History</button>
+        <button class="toggle-history">Toggle History</button>
+        <button class="clear-history">Clear History</button>
+        <ul class="history" id="history-list" style="display: none;"></ul>
     </div>
     <script src="script.js"></script>
 </body>

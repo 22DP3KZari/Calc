@@ -29,74 +29,67 @@ const numberElArray = [
     number5El, number6El, number7El, number8El, number9El
 ];
 
-// Functions
-const getValueAsStr = () => valueEl.textContent.split(',').join('');
+// New DOM Elements for history
+const historyEl = document.querySelector('.history');
+const clearHistoryEl = document.querySelector('.clear-history');
+const toggleHistoryEl = document.querySelector('.toggle-history');
 
-const getValueAsNum = () => {
-  return parseFloat(getValueAsStr());
-};
+// Array to store history
+let history = [];
 
-const setStrAsValue = (valueStr) => {
-  if (valueStr[valueStr.length - 1] === '.') {
-    valueEl.textContent += '.';
-    return;
-  }
+// Function to update history display
+function updateHistoryDisplay() {
+    historyEl.innerHTML = history.map(entry => `<li>${entry}</li>`).join('');
+}
 
-  const [wholeNumStr, decimalStr] = valueStr.split('.');
-  if (decimalStr) {
-    valueEl.textContent =
-      parseFloat(wholeNumStr).toLocaleString() + '.' + decimalStr;
-  } else {
-    valueEl.textContent = parseFloat(wholeNumStr).toLocaleString();
-  }
-};
+// Function to add entry to history
+function addToHistory(entry) {
+    history.push(entry);
+    updateHistoryDisplay();
+}
 
-// Event Listeners
-acEl.addEventListener('click', () => {
-  setStrAsValue('0');
+// Event listener for clear history button
+clearHistoryEl.addEventListener('click', () => {
+    history = [];
+    updateHistoryDisplay();
 });
 
-pmEl.addEventListener('click', () => {
-  const currentValueNum = getValueAsNum();
-  const currentValueStr = getValueAsStr();
-
-  if (currentValueStr === '-0') {
-    setStrAsValue('0');
-    return;
-  }
-  if (currentValueNum >= 0) {
-    setStrAsValue('-' + currentValueStr);
-  } else {
-    setStrAsValue(currentValueStr.substring(1));
-  }
-});
-
-percentEl.addEventListener('click', () => {
-  const currentValueNum = getValueAsNum();
-  const newValueNum = currentValueNum / 100;
-  setStrAsValue(newValueNum.toString());
-});
-
-numberElArray.forEach((numberEl, index) => {
-  numberEl.addEventListener('click', () => {
-    const currentValueStr = getValueAsStr();
-    if (currentValueStr === '0') {
-      setStrAsValue(index.toString());
+toggleHistoryEl.addEventListener('click', () => {
+    if (historyEl.style.display === 'none' || historyEl.style.display === '') {
+        historyEl.style.display = 'block';
     } else {
-      setStrAsValue(currentValueStr + index.toString());
+        historyEl.style.display = 'none';
     }
-  });
-});
-
-decimalEl.addEventListener('click', () => {
-  const currentValueStr = getValueAsStr();
-  if (!currentValueStr.includes('.')) {
-    setStrAsValue(currentValueStr + '.');
-  }
 });
 
 let operator = '';
 let previousValueStr = '';
+let currentValueStr = '';
+
+// Functions
+const getValueAsStr = () => valueEl.textContent.split(',').join('');
+const getValueAsNum = () => parseFloat(getValueAsStr());
+const setStrAsValue = (valueStr) => {
+    if (valueStr[valueStr.length - 1] === '.') {
+        valueEl.textContent += '.';
+    } else {
+        const [wholeNumStr, decimalStr] = valueStr.split('.');
+        if (decimalStr) {
+            valueEl.textContent = `${parseFloat(wholeNumStr).toLocaleString()}.${decimalStr}`;
+        } else {
+            valueEl.textContent = parseFloat(wholeNumStr).toLocaleString();
+        }
+    }
+};
+
+const handleNumberClick = (numStr) => {
+    const currentDisplayStr = getValueAsStr();
+    if (currentDisplayStr === '0') {
+        setStrAsValue(numStr);
+    } else {
+        setStrAsValue(currentDisplayStr + numStr);
+    }
+};
 
 const handleOperatorClick = (operation) => {
   const currentValueStr = getValueAsStr();
@@ -116,14 +109,54 @@ const handleOperatorClick = (operation) => {
     } else if (operator === 'multiplication') {
       newValueNum = previousValueNum * currentValueNum;
     } else if (operator === 'division') {
+      if (currentValueNum === 0) {
+        valueEl.innerText = 'Error';
+        operator = '';
+        previousValueStr = '';
+        currentValueStr = '';
+        return;
+      }
       newValueNum = previousValueNum / currentValueNum;
     }
 
+    addToHistory(`${previousValueStr} ${operator} ${currentValueStr} = ${newValueNum}`);
     setStrAsValue(newValueNum.toString());
-    operator = '';
-    previousValueStr = '';
+    previousValueStr = newValueNum.toString();
+    operator = operation;
   }
 };
+
+const calculateResult = () => {
+  const currentValueNum = getValueAsNum();
+  const previousValueNum = parseFloat(previousValueStr);
+
+  let result;
+  if (operator === 'addition') {
+    result = previousValueNum + currentValueNum;
+  } else if (operator === 'subtraction') {
+    result = previousValueNum - currentValueNum;
+  } else if (operator === 'multiplication') {
+    result = previousValueNum * currentValueNum;
+  } else if (operator === 'division') {
+    if (currentValueNum === 0) {
+      return 'Error';
+    }
+    result = previousValueNum / currentValueNum;
+  }
+
+  return result;
+};
+
+const clearDisplay = () => {
+  valueEl.innerText = '0';
+  operator = '';
+  previousValueStr = '';
+  currentValueStr = '';
+};
+
+numberElArray.forEach((numberEl, index) => {
+    numberEl.addEventListener('click', () => handleNumberClick(index.toString()));
+});
 
 additionEl.addEventListener('click', () => handleOperatorClick('addition'));
 subtractionEl.addEventListener('click', () => handleOperatorClick('subtraction'));
@@ -131,10 +164,19 @@ multiplicationEl.addEventListener('click', () => handleOperatorClick('multiplica
 divisionEl.addEventListener('click', () => handleOperatorClick('division'));
 
 equalEl.addEventListener('click', () => {
-  handleOperatorClick(operator);
+  const result = calculateResult();
+  if (result === 'Error' || result === Infinity || result === -Infinity) {
+    valueEl.innerText = 'Error';
+  } else {
+    addToHistory(`${previousValueStr} ${operator} ${getValueAsStr()} = ${result}`);
+    valueEl.innerText = result;
+  }
   operator = '';
   previousValueStr = '';
+  currentValueStr = '';
 });
+
+acEl.addEventListener('click', clearDisplay);
 
 // Clock
 const updateClock = () => {
